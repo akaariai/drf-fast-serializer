@@ -1,2 +1,3 @@
 .*.swp
 *.pyc
+benchmark/db.sqlite3
