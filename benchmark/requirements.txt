@@ -1,0 +1,4 @@
+django
+-e git+https://github.com/akaariai/django-rest-framework/@serializer_dict_class#egg=rest_framework
+-e git+https://github.com/akaariai/drf-fast-serializer/@master#egg=fast_serializer
+drf_ujson
