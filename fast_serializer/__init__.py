@@ -1,39 +1,38 @@
+from collections import OrderedDict
 from rest_framework.fields import empty
 from django.utils.functional import cached_property
 
-class NonOrderedReturnDict(dict):
-    """
-    Similar to ReturnDict, but the keys aren't ordered.
-    """
-    __slots__ = ['serializer']
-
-    def __init__(self, *args, **kwargs):
-        self.serializer = kwargs.pop('serializer')
-        super(NonOrderedReturnDict, self).__init__(*args)
-
 
 class Mixin(object):
-    ordered = True
+    ordered = False
 
     def __init__(self, *args, **kwargs):
         self.ordered = kwargs.pop('ordered', self.ordered)
         super(Mixin, self).__init__(*args, **kwargs)
-        if not self.ordered:
-            self._dict_class = NonOrderedReturnDict
 
     def obj_to_representation(self, obj):
         data = [(f, getattr(obj, f.field_name)) for
                 f in self.repr_fields]
-        return self._dict_class(
-            [(f.field_name, f.to_representation(val) if val else None)
-             for f, val in data], serializer=self)
+        if self.ordered:
+            return OrderedDict(
+                [(f.field_name, f.to_representation(val) if val else None)
+                 for f, val in data])
+        else:
+            return dict(
+                [(f.field_name, f.to_representation(val) if val else None)
+                 for f, val in data])
 
     def dict_to_representation(self, d):
         data = [(f, d.get(f.field_name, None)) for
                 f in self.repr_fields]
-        return self._dict_class(
-            [(f.field_name, f.to_representation(val) if val else None)
-             for f, val in data], serializer=self)
+        if self.ordered:
+            return OrderedDict(
+                [(f.field_name, f.to_representation(val) if val else None)
+                 for f, val in data])
+        else:
+            return dict(
+                [(f.field_name, f.to_representation(val) if val else None)
+                 for f, val in data])
 
     @cached_property
     def repr_fields(self):

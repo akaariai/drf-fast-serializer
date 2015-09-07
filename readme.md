@@ -18,7 +18,7 @@ for these methods are:
   - No support for nested, dot separated attributes.
   - No support for serializer transform_ methods.
 
-In addition the `FastSerializerMixin` class allows one to use non-sorted
+In addition the `Mixin` class allows one to use non-sorted
 dictionaries. In practice this means the fields of the serializers will be
 serialized in random order.
 
